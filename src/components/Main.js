@@ -88,6 +88,11 @@ class ImgFigure extends React.Component {
 
 // 控制组件
 class ControllerUnit extends React.Component {
+	constructor(props) {
+		super(props);
+		this.handleClick = this.handleClick.bind(this);
+	}
+
 	handleClick(e) {
 		// 如果点击的是当前正在选中态的按钮，则翻转图片，否则将对应的图片居中
 		if (this.props.arrange.isCenter) {
@@ -102,6 +107,13 @@ class ControllerUnit extends React.Component {
 
 	render() {
 		let controlelrUnitClassName = "controller-unit";
+
+		if (this.props.arrange.isCenter) {
+			controlelrUnitClassName += " is-center";
+			if (this.props.arrange.isInverse) {
+				controlelrUnitClassName += " is-inverse";
+			}
+		}
 
 		return (
 			<span className={controlelrUnitClassName} onClick={this.handleClick}></span>
@@ -180,7 +192,7 @@ class AppComponent extends React.Component {
 
 				//shang ban bu fen tu pian shu zu
 				imgsTopArr = [],
-				topImgNum = Math.ceil(Math.random() * 2), //one or none
+				topImgNum = Math.floor(Math.random() * 2), //one or none
 				//shang ceng tu pian de shu zu suo yin
 				topImgIndex = 0,
 
@@ -292,7 +304,8 @@ class AppComponent extends React.Component {
 		this.rearrange(0);
 	}
 	render() {
-		let imgFigures = [];
+		let imgFigures = [],
+			controllerUnits = [];
 		imageDatas.forEach(function(value, index) {
 			if (!this.state.imgsPositionArr[index]) {
 				this.state.imgsPositionArr[index] = {
@@ -306,6 +319,9 @@ class AppComponent extends React.Component {
 				};
 			}
 			imgFigures.push(<ImgFigure ref={'imgFigure'+index} key={index} data={value} arrange={this.state.imgsPositionArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);
+
+			controllerUnits.push(<ControllerUnit arrange={this.state.imgsPositionArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);
+
 		}.bind(this));
 
 		return (
@@ -318,7 +334,7 @@ class AppComponent extends React.Component {
         			{imgFigures}
         		</section>
         		<nav className="controller-nav">
-
+        			{controllerUnits}
         		</nav>
       		</section>
 		);
